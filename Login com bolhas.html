@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fundo-topo: #0a2a52;
+    --fundo-base: #03101f;
+    --bolha: 150, 210, 255;
+    --texto: #eaf6ff;
+    --texto-suave: rgba(234, 246, 255, 0.65);
+    --linha: rgba(200, 232, 255, 0.45);
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { height: 100%; scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    font-family: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--texto);
+    background: linear-gradient(to top, var(--fundo-base), var(--fundo-topo));
+    background-color: var(--fundo-base);
+    overflow-x: hidden;
+  }
+
+  /* Bolhas */
+  .bolhas { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+  .bolha {
+    position: absolute;
+    bottom: -160px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 30% 28%, rgba(255,255,255,0.75) 0 7%, transparent 22%),
+      radial-gradient(circle at 50% 50%, rgba(var(--bolha), 0.04) 55%, rgba(var(--bolha), 0.38) 100%);
+    border: 1px solid rgba(var(--bolha), 0.45);
+    box-shadow: inset 0 0 12px rgba(var(--bolha), 0.25);
+    opacity: 0;
+    animation: subir linear infinite;
+  }
+  @keyframes subir {
+    0%   { transform: translate3d(0, 0, 0) scale(0.7); opacity: 0; }
+    10%  { opacity: 1; }
+    50%  { transform: translate3d(var(--desvio), -60vh, 0) scale(1); }
+    90%  { opacity: 0.9; }
+    100% { transform: translate3d(calc(var(--desvio) * -0.6), -125vh, 0) scale(1.08); opacity: 0; }
+  }
+
+  /* Cartão de login */
+  .login {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    padding: 40px 32px 32px;
+    border: 1px solid rgba(200, 232, 255, 0.22);
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  h1 { margin: 0 0 6px; font-size: 2rem; font-weight: 300; letter-spacing: 0.01em; }
+  .sub { margin: 0 0 28px; color: var(--texto-suave); font-weight: 300; }
+  label { display: block; margin: 0 0 18px; font-size: 0.9rem; color: var(--texto-suave); }
+  input {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    padding: 12px 16px;
+    font: inherit;
+    font-size: 1rem;
+    color: var(--texto);
+    background: transparent;
+    border: 1px solid var(--linha);
+    border-radius: 999px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  input::placeholder { color: rgba(234, 246, 255, 0.35); }
+
+  /* Botões transparentes */
+  .botao {
+    display: block;
+    width: 100%;
+    padding: 12px 16px;
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    color: var(--texto);
+    background: transparent;
+    border: 1px solid var(--linha);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .botao:hover { background: rgba(255, 255, 255, 0.12); border-color: #fff; }
+  .botao:active { background: rgba(255, 255, 255, 0.2); }
+  .botao + .botao { margin-top: 12px; border-color: rgba(200, 232, 255, 0.25); font-weight: 400; }
+  .esqueci { display: block; margin: -4px 0 22px; text-align: right; font-size: 0.85rem; color: var(--texto-suave); }
+  .esqueci:hover { color: var(--texto); }
+
+  input:focus-visible, .botao:focus-visible, .esqueci:focus-visible {
+    outline: 2px solid #bfe6ff;
+    outline-offset: 3px;
+  }
+  input:focus-visible { background: rgba(255, 255, 255, 0.06); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bolha { animation: none; opacity: 0.6; bottom: auto; }
+  }
+</style>
+</head>
+<body>
+  <div class="bolhas" id="bolhas" aria-hidden="true"></div>
+
+  <main class="login">
+    <h1>Entrar</h1>
+    <p class="sub">Bem-vindo de volta.</p>
+
+    <form onsubmit="return false">
+      <label>Email
+        <input type="email" placeholder="nome@exemplo.pt" autocomplete="email" required>
+      </label>
+      <label>Palavra-passe
+        <input type="password" placeholder="••••••••" autocomplete="current-password" required>
+      </label>
+      <a class="esqueci" href="#">Esqueceu-se da palavra-passe?</a>
+      <button class="botao" type="submit">Entrar</button>
+      <a class="botao" href="#">Criar conta</a>
+    </form>
+  </main>
+
+<script>
+  (function () {
+    var caixa = document.getElementById("bolhas");
+    var reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var total = 30;
+    for (var i = 0; i < total; i++) {
+      var b = document.createElement("span");
+      var tamanho = 10 + Math.random() * 70;
+      b.className = "bolha";
+      b.style.width = b.style.height = tamanho + "px";
+      b.style.left = Math.random() * 100 + "%";
+      b.style.setProperty("--desvio", (Math.random() * 90 - 45) + "px");
+      b.style.animationDuration = (9 + Math.random() * 14) + "s";
+      b.style.animationDelay = (-Math.random() * 20) + "s";
+      if (reduzir) b.style.top = Math.random() * 100 + "%";
+      caixa.appendChild(b);
+    }
+  })();
+</script>
+</body>
+</html>
